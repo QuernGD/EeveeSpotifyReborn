@@ -9,7 +9,7 @@ class HardcodedLyricsRepository: LyricsRepository {
     private let hardcodedSongs: [(title: String, artist: String, lyrics: [(ms: Int, line: String)])] = [
         (
             title: "MONA LISA",
-            artist: "drake",
+            artist: "Drake",
             lyrics: [
                 (0,    "Look, you remind me of Jane Birkin, your body insane in person"),
                 (5000, "Wanna do special things for you, you deserve it"),
