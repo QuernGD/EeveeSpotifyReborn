@@ -36,6 +36,14 @@ private func loadCustomLyricsForCurrentTrack() throws -> Lyrics {
     
     let options = UserDefaults.lyricsOptions
     var source = UserDefaults.lyricsSource
+
+    // Check hardcoded songs first
+    if let hardcodedDto = try? HardcodedLyricsRepository.shared.getLyrics(searchQuery, options: options) {
+        lyricsState.loadedSuccessfully = true
+        return Lyrics.with {
+            $0.data = hardcodedDto.toSpotifyLyricsData(source: "Hardcoded")
+        }
+    }
     
     // switched to swift 5.8 syntax to compile with Theos on Linux.
     var repository: LyricsRepository
