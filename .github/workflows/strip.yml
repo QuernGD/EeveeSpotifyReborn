@@ -1,0 +1,45 @@
+name: Strip IPA
+
+on:
+  workflow_dispatch:
+    inputs:
+      ipa_url:
+        description: "URL to your modded Spotify IPA"
+        required: true
+        type: string
+
+jobs:
+  strip:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Hide Sensitive Inputs
+        uses: levibostian/action-hide-sensitive-inputs@v1
+
+      - name: Download Modded IPA
+        run: wget "${{ inputs.ipa_url }}" --no-verbose -O modded.ipa
+
+      - name: Strip EeveeSpotify from IPA
+        run: |
+          mkdir -p ipa_extracted
+          cp modded.ipa ipa_extracted/modded.zip
+          cd ipa_extracted
+          unzip -q modded.zip
+          find . -name "EeveeSpotify.dylib" -delete
+          find . -name "EeveeSpotify.bundle" -type d -exec rm -rf {} + 2>/dev/null || true
+          find . -name "*EeveeSpotify*" -delete 2>/dev/null || true
+          find . -name "zxPluginsInject.dylib" -delete 2>/dev/null || true
+          find . -name "SwiftProtobuf.framework" -type d -exec rm -rf {} + 2>/dev/null || true
+          zip -qr ../Spotify-clean.ipa .
+          cd ..
+
+      - name: Upload to GitHub Releases
+        uses: softprops/action-gh-release@v2.0.1
+        with:
+          tag_name: strip-${{ github.run_number }}
+          name: Stripped Spotify (${{ github.run_number }})
+          files: |
+            Spotify-clean.ipa
+          draft: true
