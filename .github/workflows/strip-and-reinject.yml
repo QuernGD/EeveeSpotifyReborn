@@ -37,11 +37,11 @@ jobs:
           cp modded.ipa ipa_extracted/modded.zip
           cd ipa_extracted
           unzip -q modded.zip
-          # Remove old EeveeSpotify dylib and bundle
           find . -name "EeveeSpotify.dylib" -delete
           find . -name "EeveeSpotify.bundle" -type d -exec rm -rf {} + 2>/dev/null || true
           find . -name "*EeveeSpotify*" -delete 2>/dev/null || true
-          # Repack clean IPA
+          find . -name "zxPluginsInject.dylib" -delete 2>/dev/null || true
+          find . -name "SwiftProtobuf.framework" -type d -exec rm -rf {} + 2>/dev/null || true
           zip -qr ../clean.ipa .
           cd ..
 
